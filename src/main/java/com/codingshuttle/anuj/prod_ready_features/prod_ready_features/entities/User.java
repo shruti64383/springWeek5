@@ -1,6 +1,10 @@
 package com.codingshuttle.anuj.prod_ready_features.prod_ready_features.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,6 +12,10 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -19,6 +27,7 @@ public class User implements UserDetails {
 
     private String password;
 
+    private String name;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
