@@ -51,4 +51,13 @@ public class UserService implements UserDetailsService {
 
         return ResponseEntity.ok(signedDto);
     }
+
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public User save(User newUser) {
+        return userRepository.save(newUser);
+    }
 }
