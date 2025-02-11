@@ -5,6 +5,7 @@ import com.codingshuttle.anuj.prod_ready_features.prod_ready_features.handlers.O
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -20,6 +21,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.codingshuttle.anuj.prod_ready_features.prod_ready_features.entities.enums.Roles.ADMIN;
+import static com.codingshuttle.anuj.prod_ready_features.prod_ready_features.entities.enums.Roles.CREATOR;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -27,13 +31,17 @@ public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final OAuth2SuccessHandlers oAuth2SuccessHandlers;
+    private static final String[] publicRoutes = {
+            "/error", "/auth/**","home.html"
+    };
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .authorizeHttpRequests(auth-> auth
-                        .requestMatchers("/posts", "/auth/**","home.html").permitAll()
-//                        .requestMatchers("/posts/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(publicRoutes).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/posts/**").hasAnyRole(ADMIN.name(), CREATOR.name())
+                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrfConfig-> csrfConfig.disable())
                 .sessionManagement(sessionConfig-> sessionConfig
